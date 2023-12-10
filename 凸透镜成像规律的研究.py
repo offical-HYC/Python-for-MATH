@@ -10,11 +10,10 @@ SPEED = 10
 
 # 物
 class Image(Sprite):
-    def __init__(self, image, x, y, real=True):
+    def __init__(self, image, x, y):
         super().__init__(image)
         self.center_x, self.center_y = x, y
-        if not real:
-            self.append_texture(load_texture(image, flipped=True))
+        self.append_texture(load_texture(image, flipped=True))
 
 
 # 凸透镜
@@ -69,22 +68,32 @@ class Program(Window):
     def on_update(self, delta_time: float):
         self.u += self.u_speed
         self.focal_length += self.lens_speed
-        # 像物大小比例随物距变化而变化
-        self.v_size = self.focal_length * 2 / self.u
-        # 像的位置
-        """
-        凸透镜的成像规律是1 /u + 1/v = 1/f（即：物距的倒数与像距的倒数之和等于焦距的倒数。）
-        """
-        self.v_x = SCREEN_WIDTH // 2 - 1 / (1 / self.u - 1 / self.focal_length)
         # 一倍焦距分虚实
-        if self.u <= self.focal_length:
+        if self.u == self.focal_length or self.u <= 0:
             self.v_able = False
-            self.v_sun.kill()
+            return
+        else:
+            self.v_able = True
+        if self.v_able:
+            if self.u > self.focal_length:
+                # 像物大小比例随物距变化而变化
+                self.v_size = self.focal_length * 2 / self.u
+                # 像的位置
+                """
+                凸透镜的成像规律是1/u + 1/v = 1/f（即：物距的倒数与像距的倒数之和等于焦距的倒数。）
+                """
+                self.v_x = SCREEN_WIDTH // 2 + 1 / (1 / self.focal_length - 1 / self.u)
+                self.v_sun = Image("fish.png", self.v_x, SCREEN_HEIGHT // 2 - 25)
+                self.v_sun.set_texture(1)
+            else:
+                self.v_size = self.u / self.focal_length * 5
+                self.v_x = SCREEN_WIDTH // 2 - (self.u / 100) ** 2 * 120
+                self.v_sun = Image("virtual-fish.png", self.v_x, SCREEN_HEIGHT // 2)
+
 
         self.sun = Image("fish.png", SCREEN_WIDTH // 2 - self.u, SCREEN_HEIGHT // 2)  # 物
         self.sun.change_x = self.u_speed
-        self.v_sun = Image("fish.png", self.v_x, SCREEN_HEIGHT // 2, False)
-        self.v_sun.set_texture(1)
+
         self.v_sun.scale = self.v_size
 
     # 按下键盘移动物
