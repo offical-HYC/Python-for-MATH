@@ -51,9 +51,9 @@ class Program(Window):
         # 光线的绘制
         draw_line(SCREEN_WIDTH // 2 - self.u, SCREEN_HEIGHT // 2 + 50, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50,
                   color.RED, 10)  # 平行于主光轴的入射光线经凸透镜折射后过焦点
-        draw_line(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50, self.v_x, SCREEN_HEIGHT // 2 - 50 * self.v_size,
+        draw_line(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50, SCREEN_WIDTH // 2 + self.focal_length * 10, SCREEN_HEIGHT // 2 - 50 * 10,
                   color.RED, 10)
-        draw_line(SCREEN_WIDTH // 2 - self.u, SCREEN_HEIGHT // 2 + 50, self.v_x, SCREEN_HEIGHT // 2 - 50 * self.v_size,
+        draw_line(SCREEN_WIDTH // 2 - self.u, SCREEN_HEIGHT // 2 + 50, SCREEN_WIDTH + self.u * 10, SCREEN_HEIGHT // 2 - 50 * 10,
                   color.RED, 10)  # 过光心的光线方向不变
         # 焦点、二倍焦点的绘制
         draw_circle_filled(SCREEN_WIDTH // 2 - self.focal_length, SCREEN_HEIGHT // 2, 20, color.BLUE)
